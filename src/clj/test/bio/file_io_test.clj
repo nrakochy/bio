@@ -1,6 +1,7 @@
 (ns bio.file-io-test
   (:require [clojure.test :refer :all]
 	    [clojure.string :as s :refer [split]]
+	    [clojure.java.io :as io :refer [as-file file]]
             [bio.file-io :refer :all]))
 
 (deftest def-record-delimiter 
@@ -26,3 +27,10 @@
   (testing "Assigns keys to a comma delimited string" 
       (let [example "LastName, FirstName, Gender, Color, DOB"]  
       (is (= result (assign-keys [] example)))))))
+
+(deftest fn-extract-records
+  (testing "Correctly filters non-files from given path and calls reduce method"
+    (with-redefs [parse-file (fn [data] data)] 
+      (let [file (as-file "fake-file.txt")]
+      (let [result (lazy-seq '())]
+      (is (= result (extract-records file))))))))
