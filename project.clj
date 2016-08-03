@@ -14,6 +14,8 @@
 
   :source-paths ["src/clj"]
 
+  :test-paths ["src/clj/test"]
+
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :figwheel {:css-dirs ["resources/public/css"]
