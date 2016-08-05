@@ -19,11 +19,12 @@
 
 (testing "Date Formatter dependent"
   (deftest fn-format-date
-    (let [lib (type (tformat/parse date-formatter "01/01/1970"))]
     (testing "Returns map with :dob as lib object and other key-values unchanged"
+    (let [lib (type (tformat/parse date-formatter "01/01/1970"))]
+    (let [func parse-date]
       (let [example {:test1 "test" :dob "08/08/2000"}] 
-	(is (= lib (type (:dob (format-date example)))))
-	(is (= "test" (:test1 (format-date example))))))))
+	(is (= lib (type (:dob (format-date func example)))))
+	(is (= "test" (:test1 (format-date func example)))))))))
 
   (deftest fn-assign-keys
     (let [formatted-date (tformat/parse date-formatter "01/01/1970")]
@@ -41,7 +42,7 @@
 (deftest fn-extract-records
   (testing "Correctly filters non-files from given path and calls reduce method"
     (with-redefs [parse-file (fn [data] data)] 
-      (let [file (as-file "fake-file.txt")]
+      (let [file '("fake-file.txt")]
       (let [result (lazy-seq '())]
       (is (= result (extract-records file))))))))
 

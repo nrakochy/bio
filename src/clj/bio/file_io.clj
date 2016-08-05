@@ -1,22 +1,41 @@
 (ns bio.file-io
   (:require [clojure.java.io :as io :refer [reader file]]
-	    [clojure.string :as s :refer [trim split]]
+	    [clojure.string :as s :refer [trim split join]]
 	    [clj-time.format :as tformat :refer [formatter parse unparse]]))
 
 (def data-columns [:last_name :first_name :gender :favorite_color :dob])
 (def record-delimiter (re-pattern "\\s[|]\\s|[,]\\s|\\s"))
 (def date-formatter (formatter "MM/dd/YYYY"))
+(def date-format  "MM/dd/YYYY")
+(def default-delimiter ", ")
 
-(defn format-date [record]
-  (update record :dob #(tformat/parse date-formatter %)))
+(defn parse-date [date]
+  (tformat/parse (tformat/formatter date-format) date))
+
+(defn unparse-date [date]
+  (tformat/unparse (tformat/formatter date-format) date))
+
+(defn format-date [f record]
+  (update record :dob #(f %)))
   
 (defn assign-keys 
   "Splits string on delimiter, zips to map and appends to given result vector"
   [result line]
   (->> (s/split (s/trim line) record-delimiter) 
     (zipmap data-columns)
-    (format-date)
+    (format-date parse-date)
     (conj result)))
+
+(defn cli-format 
+  "Unparses time format & extracts values from records to produce delimited string for printing"
+  [record] 
+  (->> record
+    (format-date unparse-date)
+    (vals)
+    (s/join default-delimiter)))
+
+(defn print-records [coll]
+  (dorun (map #(prn (cli-format %)) coll)))
 
 (defn parse-file
   "Lazy-read each line from file, reduces on key assignment method & append results to given vector" 
@@ -26,7 +45,7 @@
 
 (defn extract-records 
   "Turns any number of paths (directories or files) into seq of files and reduces on extraction method"
-  [& paths]
+  [paths]
     (->>  
       (distinct (reduce into (map #(file-seq (io/file %)) paths)))
       (filter #(.isFile %)) 
