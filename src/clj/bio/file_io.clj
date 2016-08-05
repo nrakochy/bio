@@ -4,7 +4,7 @@
 	    [clj-time.format :as tformat :refer [formatter parse unparse]]))
 
 (def data-columns [:last_name :first_name :gender :favorite_color :dob])
-(def record-delimiter (re-pattern "\\s[|]\\s|[,]\\s|\\s"))
+(def record-delimiters (re-pattern "\\s[|]\\s|[,]\\s|\\s"))
 (def date-formatter (formatter "MM/dd/YYYY"))
 (def date-format  "MM/dd/YYYY")
 (def default-delimiter ", ")
@@ -21,7 +21,7 @@
 (defn assign-keys 
   "Splits string on delimiter, zips to map and appends to given result vector"
   [result line]
-  (->> (s/split (s/trim line) record-delimiter) 
+  (->> (s/split (s/trim line) record-delimiters) 
     (zipmap data-columns)
     (format-date parse-date)
     (conj result)))
@@ -34,22 +34,11 @@
     (vals)
     (s/join default-delimiter)))
 
-(defn print-records [coll]
-  (dorun (map #(prn (cli-format %)) coll)))
-
 (defn parse-file
   "Lazy-read each line from file, reduces on key assignment method & append results to given vector" 
   [result file]
   (with-open [r (io/reader file)]
    (reduce conj result (reduce assign-keys [] (line-seq r)))))
-
-(defn extract-records 
-  "Turns any number of paths (directories or files) into seq of files and reduces on extraction method"
-  [paths]
-    (->>  
-      (distinct (reduce into (map #(file-seq (io/file %)) paths)))
-      (filter #(.isFile %)) 
-      (reduce parse-file [])))
 
 (defn configurable-sort   
   "Switches ascending or descending order based on :order key in sort-config map,
@@ -71,3 +60,14 @@
 (defn multisort 
   "Sort config requires :order and :sym-key and should be seq-able i.e. [{:sym-key :sort-key :order :desc}]"
   ([coll sort-configs] (sort #(kv-sort sort-configs %1 %2) coll)))
+
+(defn print-records [coll]
+  (dorun (map #(prn (cli-format %)) coll)))
+
+(defn extract-records 
+  "Turns any number of paths (directories or files) into seq of files and reduces on extraction method"
+  [paths]
+    (->>  
+      (distinct (reduce into (map #(file-seq (io/file %)) paths)))
+      (filter #(.isFile %)) 
+      (reduce parse-file [])))

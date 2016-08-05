@@ -26,24 +26,27 @@
       (is (= "test" (:test1 (format-date func example)))))))))
 
 (deftest fn-assign-keys
-  (let [formatted-date (parse-date "01/01/1970")]
-  (let [result (conj [] (zipmap data-columns ["LastName" "FirstName" "Gender" "Color" formatted-date]))]
-  (testing "Assigns keys to a pipe delimited string" 
-      (let [example "LastName | FirstName | Gender | Color | 01/01/1970"]  
-      (is (= result (assign-keys [] example)))))
-  (testing "Assigns keys to a space delimited string" 
-      (let [example "LastName FirstName Gender Color 01/01/1970"]  
-      (is (= result (assign-keys [] example)))))
-  (testing "Assigns keys to a comma delimited string" 
-      (let [example "LastName, FirstName, Gender, Color, 01/01/1970"]  
-      (is (= result (assign-keys [] example))))))))
+  (with-redefs [data-columns [:last_name :first_name :gender :favorite_color :dob]]
+    (let [formatted-date (parse-date "01/01/1970")]
+    (let [result (conj [] (zipmap data-columns ["LastName" "FirstName" "Gender" "Color" formatted-date]))]
+    (testing "Assigns keys to a pipe delimited string" 
+	(let [example "LastName | FirstName | Gender | Color | 01/01/1970"]  
+	(is (= result (assign-keys [] example)))))
+    (testing "Assigns keys to a space delimited string" 
+	(let [example "LastName FirstName Gender Color 01/01/1970"]  
+	(is (= result (assign-keys [] example)))))
+    (testing "Assigns keys to a comma delimited string" 
+	(let [example "LastName, FirstName, Gender, Color, 01/01/1970"]  
+	(is (= result (assign-keys [] example)))))))))
 
-(deftest fn-extract-records
-  (testing "Correctly filters non-files from given path and calls reduce method"
-    (with-redefs [parse-file (fn [data] data)] 
-      (let [file '("fake-file.txt")]
-      (let [result (lazy-seq '())]
-      (is (= result (extract-records file))))))))
+(deftest fn-cli-format 
+  (testing "Unpacks record and returns as delimited string" 
+    (with-redefs [default-delimiter " | "] 
+    (with-redefs [data-columns [:last_name :first_name :gender :favorite_color :dob]]
+      (let [formatted-date (parse-date "01/01/1970")]
+      (let [sample-record (zipmap data-columns ["LastName" "FirstName" "Gender" "Color" formatted-date])]
+      (let [result "LastName | FirstName | Gender | Color | 01/01/1970"]  
+      (is (= result (cli-format sample-record))))))))))
 
 (deftest fn-configurable-sort
   (let [example1 {:test1 1 :test2 1}]   
@@ -90,3 +93,10 @@
       (let [sort-config [desc-config asc-config]]
       (let [result [{:test1 "BBBB" :test2 "CCCC" :test3 "AAAA"} {:test1 "CCCC" :test2 "AAAA" :test3 "BBBB"} {:test1 "DDDD" :test2 "DDDD" :test3 "BBBB"} {:test1 "AAAA" :test2 "BBBB" :test3 "CCCC"}]]
 	(is (= result (multisort example-recs sort-config))))))))))
+
+(deftest fn-extract-records
+  (testing "Correctly filters non-files from given path and calls reduce method"
+    (with-redefs [parse-file (fn [data] data)] 
+      (let [file '("fake-file.txt")]
+      (let [result (lazy-seq '())]
+      (is (= result (extract-records file))))))))
