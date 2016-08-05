@@ -12,8 +12,9 @@
     (zipmap data-columns)
     (conj result)))
 
-(defn parse-file [result file]
+(defn parse-file
   "Lazy-read each line from file, reduces on key assignment method & append results to given vector" 
+  [result file]
   (with-open [r (io/reader file)]
    (reduce conj result (reduce assign-keys [] (line-seq r)))))
 
@@ -22,3 +23,24 @@
   [path]
     (->> (filter #(.isFile %) (file-seq (io/file path))) 
       (reduce parse-file [])))
+
+(defn configurable-sort   
+  "Switches ascending or descending order based on :order key in sort-config map,
+   and compares given args (maps) based on symbolized value in key to sort on (:sym-key)"
+  [sort-config comp1 comp2]
+  (let [{:keys [sym-key order]} sort-config]
+    (if (= order :desc)
+      (compare (sym-key comp2) (sym-key comp1))
+      (compare (sym-key comp1) (sym-key comp2)))))
+
+(defn kv-sort 
+  "Recursively calls configurable-sort on sort-configs until result != 0 or the configs have been exhausted"
+  ([sort-configs comp1 comp2] (kv-sort sort-configs comp1 comp2 0))
+  ([sort-configs comp1 comp2 result] 
+    (if (or (empty? sort-configs) (not (zero? result))) 
+      result
+      (recur (rest sort-configs) comp1 comp2 (configurable-sort (first sort-configs) comp1 comp2))))) 
+	
+(defn multisort 
+  "Sort config requires :order and :sym-key and should be seq-able i.e. [{:sym-key :sort-key :order :desc}]"
+  ([coll sort-configs] (sort #(kv-sort sort-configs %1 %2) coll)))
