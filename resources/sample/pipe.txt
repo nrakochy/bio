@@ -1,4 +1,4 @@
-Last1 | First1 | Male | Color1 | DOB1  
-Last2 | First2 | Female | Color2 | DOB2  
-Last3 | First3 | Male | Color3 | DOB3  
-Last4 | First4 | Female | Color4 | DOB4  
+Last1 | First1 | Male | Color1 | 06/13/2007  
+Last2 | First2 | Female | Color2 | 07/12/1996  
+Last3 | First3 | Male | Color3 | 08/13/1985  
+Last4 | First4 | Female | Color4 | 07/12/1974  
