@@ -1,4 +1,4 @@
-1Last | 1First | 1Gender | 1Color | 1DOB  
-2Last | 2First | 2Gender | 2Color | 2DOB  
-3Last | 3First | 3Gender | 3Color | 3DOB  
-4Last | 4First | 4Gender | 4Color | 4DOB  
+Last1 | First1 | Male | Color1 | DOB1  
+Last2 | First2 | Female | Color2 | DOB2  
+Last3 | First3 | Male | Color3 | DOB3  
+Last4 | First4 | Female | Color4 | DOB4  
