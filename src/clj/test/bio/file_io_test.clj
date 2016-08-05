@@ -17,27 +17,26 @@
       (let [pipe "LastName | FirstName | Gender | Color | 01/01/1970"]  
       (is (= result (s/split pipe record-delimiter)))))))
 
-(testing "Date Formatter dependent"
-  (deftest fn-format-date
-    (testing "Returns map with :dob as lib object and other key-values unchanged"
-    (let [lib (type (tformat/parse date-formatter "01/01/1970"))]
-    (let [func parse-date]
-      (let [example {:test1 "test" :dob "08/08/2000"}] 
-	(is (= lib (type (:dob (format-date func example)))))
-	(is (= "test" (:test1 (format-date func example)))))))))
+(deftest fn-format-date
+  (testing "Returns map with updated :dob as lib object and other key-values unchanged"
+  (let [dtype (type (parse-date "01/01/1970"))]
+  (let [func parse-date]
+    (let [example {:test1 "test" :dob "08/08/2000"}] 
+      (is (= dtype (type (:dob (format-date func example)))))
+      (is (= "test" (:test1 (format-date func example)))))))))
 
-  (deftest fn-assign-keys
-    (let [formatted-date (tformat/parse date-formatter "01/01/1970")]
-    (let [result (conj [] (zipmap data-columns ["LastName" "FirstName" "Gender" "Color" formatted-date]))]
-    (testing "Assigns keys to a pipe delimited string" 
-	(let [example "LastName | FirstName | Gender | Color | 01/01/1970"]  
-	(is (= result (assign-keys [] example)))))
-    (testing "Assigns keys to a space delimited string" 
-	(let [example "LastName FirstName Gender Color 01/01/1970"]  
-	(is (= result (assign-keys [] example)))))
-    (testing "Assigns keys to a comma delimited string" 
-	(let [example "LastName, FirstName, Gender, Color, 01/01/1970"]  
-	(is (= result (assign-keys [] example)))))))))
+(deftest fn-assign-keys
+  (let [formatted-date (parse-date "01/01/1970")]
+  (let [result (conj [] (zipmap data-columns ["LastName" "FirstName" "Gender" "Color" formatted-date]))]
+  (testing "Assigns keys to a pipe delimited string" 
+      (let [example "LastName | FirstName | Gender | Color | 01/01/1970"]  
+      (is (= result (assign-keys [] example)))))
+  (testing "Assigns keys to a space delimited string" 
+      (let [example "LastName FirstName Gender Color 01/01/1970"]  
+      (is (= result (assign-keys [] example)))))
+  (testing "Assigns keys to a comma delimited string" 
+      (let [example "LastName, FirstName, Gender, Color, 01/01/1970"]  
+      (is (= result (assign-keys [] example))))))))
 
 (deftest fn-extract-records
   (testing "Correctly filters non-files from given path and calls reduce method"
