@@ -19,9 +19,11 @@
    (reduce conj result (reduce assign-keys [] (line-seq r)))))
 
 (defn extract-records 
-  "Turns path (can be directory or file) into seq of files and reduces on extraction method"
-  [path]
-    (->> (filter #(.isFile %) (file-seq (io/file path))) 
+  "Turns any number of paths (directories or files) into seq of files and reduces on extraction method"
+  [& paths]
+    (->>  
+      (reduce into (map #(file-seq (io/file %)) paths))
+      (filter #(.isFile %)) 
       (reduce parse-file [])))
 
 (defn configurable-sort   
