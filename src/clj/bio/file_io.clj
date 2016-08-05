@@ -1,15 +1,21 @@
 (ns bio.file-io
-  (:require [clojure.java.io :as io :refer [reader file]])
-  (:require [clojure.string :as s :refer [split trim]]))
+  (:require [clojure.java.io :as io :refer [reader file]]
+	    [clojure.string :as s :refer [trim split]]
+	    [clj-time.format :as tformat :refer [formatter parse unparse]]))
 
 (def data-columns [:last_name :first_name :gender :favorite_color :dob])
 (def record-delimiter (re-pattern "\\s[|]\\s|[,]\\s|\\s"))
+(def date-formatter (formatter "MM/dd/YYYY"))
 
+(defn format-date [record]
+  (update record :dob #(tformat/parse date-formatter %)))
+  
 (defn assign-keys 
   "Splits string on delimiter, zips to map and appends to given result vector"
   [result line]
-  (->> (s/split (trim line) record-delimiter) 
+  (->> (s/split (s/trim line) record-delimiter) 
     (zipmap data-columns)
+    (format-date)
     (conj result)))
 
 (defn parse-file

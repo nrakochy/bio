@@ -6,7 +6,8 @@
                  [re-frame "0.7.0"]
                  [compojure "1.5.0"]
                  [yogthos/config "0.8"]
-                 [ring "1.4.0"]]
+                 [ring "1.4.0"]
+		 [clj-time "0.12.0"]]
 
   :plugins [[lein-cljsbuild "1.1.3"]]
 

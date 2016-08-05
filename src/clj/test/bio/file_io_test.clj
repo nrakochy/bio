@@ -2,31 +2,41 @@
   (:require [clojure.test :refer :all]
 	    [clojure.string :as s :refer [split]]
 	    [clojure.java.io :as io :refer [as-file file]]
+	    [clj-time.format :as tformat :refer [formatter parse]]
             [bio.file-io :refer :all]))
 
 (deftest def-record-delimiter 
-  (let [result ["LastName" "FirstName" "Gender" "Color" "DOB"]]  
+  (let [result ["LastName" "FirstName" "Gender" "Color" "01/01/1970"]]  
   (testing "Regex correctly splits on comma" 
-      (let [comma "LastName, FirstName, Gender, Color, DOB"]  
+      (let [comma "LastName, FirstName, Gender, Color, 01/01/1970"]  
       (is (= result (s/split comma record-delimiter)))))
   (testing "Regex correctly splits on space" 
-      (let [space "LastName FirstName Gender Color DOB"]  
+      (let [space "LastName FirstName Gender Color 01/01/1970"]  
       (is (= result (s/split space record-delimiter)))))
   (testing "Regex correctly splits on pipe" 
-      (let [pipe "LastName | FirstName | Gender | Color | DOB"]  
+      (let [pipe "LastName | FirstName | Gender | Color | 01/01/1970"]  
       (is (= result (s/split pipe record-delimiter)))))))
 
-(deftest fn-assign-keys
-  (let [result (conj [] (zipmap data-columns ["LastName" "FirstName" "Gender" "Color" "DOB"]))]
-  (testing "Assigns keys to a pipe delimited string" 
-      (let [example "LastName | FirstName | Gender | Color | DOB"]  
-      (is (= result (assign-keys [] example)))))
-  (testing "Assigns keys to a space delimited string" 
-      (let [example "LastName FirstName Gender Color DOB"]  
-      (is (= result (assign-keys [] example)))))
-  (testing "Assigns keys to a comma delimited string" 
-      (let [example "LastName, FirstName, Gender, Color, DOB"]  
-      (is (= result (assign-keys [] example)))))))
+(testing "Date Formatter dependent"
+  (deftest fn-format-date
+    (let [lib (type (tformat/parse date-formatter "01/01/1970"))]
+    (testing "Returns map with :dob as lib object and other key-values unchanged"
+      (let [example {:test1 "test" :dob "08/08/2000"}] 
+	(is (= lib (type (:dob (format-date example)))))
+	(is (= "test" (:test1 (format-date example))))))))
+
+  (deftest fn-assign-keys
+    (let [formatted-date (tformat/parse date-formatter "01/01/1970")]
+    (let [result (conj [] (zipmap data-columns ["LastName" "FirstName" "Gender" "Color" formatted-date]))]
+    (testing "Assigns keys to a pipe delimited string" 
+	(let [example "LastName | FirstName | Gender | Color | 01/01/1970"]  
+	(is (= result (assign-keys [] example)))))
+    (testing "Assigns keys to a space delimited string" 
+	(let [example "LastName FirstName Gender Color 01/01/1970"]  
+	(is (= result (assign-keys [] example)))))
+    (testing "Assigns keys to a comma delimited string" 
+	(let [example "LastName, FirstName, Gender, Color, 01/01/1970"]  
+	(is (= result (assign-keys [] example)))))))))
 
 (deftest fn-extract-records
   (testing "Correctly filters non-files from given path and calls reduce method"
