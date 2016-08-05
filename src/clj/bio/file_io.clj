@@ -22,7 +22,7 @@
   "Turns any number of paths (directories or files) into seq of files and reduces on extraction method"
   [& paths]
     (->>  
-      (reduce into (map #(file-seq (io/file %)) paths))
+      (distinct (reduce into (map #(file-seq (io/file %)) paths)))
       (filter #(.isFile %)) 
       (reduce parse-file [])))
 
