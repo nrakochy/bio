@@ -15,6 +15,6 @@
 (defn output-reqs [coll]
   (dorun (map #(sort-print coll %) (required-sort sort-configs))))
 
-(defn run [paths]
+(defn run [& paths]
   (output-reqs (fio/extract-records paths)))
 

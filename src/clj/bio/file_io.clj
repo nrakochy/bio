@@ -66,7 +66,7 @@
 
 (defn extract-records 
   "Turns any number of paths (directories or files) into seq of files and reduces on extraction method"
-  [& paths]
+  [paths]
     (->>  
       (distinct (reduce into (map #(file-seq (io/file %)) paths)))
       (filter #(.isFile %)) 
