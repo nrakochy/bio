@@ -9,13 +9,13 @@
   (let [result ["LastName" "FirstName" "Gender" "Color" "01/01/1970"]]  
   (testing "Regex correctly splits on comma" 
       (let [comma "LastName, FirstName, Gender, Color, 01/01/1970"]  
-      (is (= result (s/split comma record-delimiter)))))
+      (is (= result (s/split comma record-delimiters)))))
   (testing "Regex correctly splits on space" 
       (let [space "LastName FirstName Gender Color 01/01/1970"]  
-      (is (= result (s/split space record-delimiter)))))
+      (is (= result (s/split space record-delimiters)))))
   (testing "Regex correctly splits on pipe" 
       (let [pipe "LastName | FirstName | Gender | Color | 01/01/1970"]  
-      (is (= result (s/split pipe record-delimiter)))))))
+      (is (= result (s/split pipe record-delimiters)))))))
 
 (deftest fn-format-date
   (testing "Returns map with updated :dob as lib object and other key-values unchanged"

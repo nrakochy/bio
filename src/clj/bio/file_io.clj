@@ -5,7 +5,6 @@
 
 (def data-columns [:last_name :first_name :gender :favorite_color :dob])
 (def record-delimiters (re-pattern "\\s[|]\\s|[,]\\s|\\s"))
-(def date-formatter (formatter "MM/dd/YYYY"))
 (def date-format  "MM/dd/YYYY")
 (def default-delimiter ", ")
 
@@ -17,13 +16,16 @@
 
 (defn format-date [f record]
   (update record :dob #(f %)))
+
+(defn set-record-date [record]
+  (format-date parse-date record)) 
   
 (defn assign-keys 
   "Splits string on delimiter, zips to map and appends to given result vector"
   [result line]
   (->> (s/split (s/trim line) record-delimiters) 
     (zipmap data-columns)
-    (format-date parse-date)
+    (set-record-date) 
     (conj result)))
 
 (defn cli-format 
