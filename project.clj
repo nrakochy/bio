@@ -7,6 +7,10 @@
                  [compojure "1.5.0"]
                  [yogthos/config "0.8"]
                  [ring "1.4.0"]
+		 [ring/ring-json "0.4.0"]
+		 [ring/ring-defaults "0.2.1"]
+		 [ring/ring-mock "0.3.0"]
+		 [cheshire "5.6.3"]
 		 [clj-time "0.12.0"]]
 
   :plugins [[lein-cljsbuild "1.1.3"]]
