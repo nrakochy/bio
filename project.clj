@@ -10,8 +10,10 @@
 		 [ring/ring-json "0.4.0"]
 		 [ring/ring-defaults "0.2.1"]
 		 [ring/ring-mock "0.3.0"]
+		 [ring-cors "0.1.8"]
 		 [cheshire "5.6.3"]
-		 [clj-time "0.12.0"]]
+		 [clj-time "0.12.0"]
+		 [cljs-ajax "0.5.8"]]
 
   :plugins [[lein-cljsbuild "1.1.3"]]
 

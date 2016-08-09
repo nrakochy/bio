@@ -1,5 +1,5 @@
 (ns bio.server
-  (:require [bio.handler :refer [handler dev-handler]]
+  (:require [bio.handler :refer [handler]]
             [config.core :refer [env]]
             [ring.adapter.jetty :refer [run-jetty]])
   (:gen-class))

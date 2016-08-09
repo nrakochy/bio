@@ -2,6 +2,7 @@
   (:require [bio.core :as repo :refer [get-records update-records]]
 	    [compojure.core :refer [GET POST defroutes context]]
             [compojure.route :refer [resources]]
+	    [ring.middleware.cors :refer [wrap-cors]]
             [ring.util.response :refer [resource-response]]
             [ring.middleware.json :refer [wrap-json-body]]
             [ring.middleware.reload :refer [wrap-reload]]))
@@ -19,6 +20,9 @@
     (GET "/name" [] (respond (repo/get-records :lastname))))
   (resources "/"))
 
-(def dev-handler (-> #'routes wrap-reload wrap-json-body))
-
-(def handler (-> routes wrap-json-body))
+(def handler (-> routes
+		  (wrap-json-body)
+		  (wrap-cors :access-control-allow-origin [#"http://localhost*"]
+			     :access-control-allow-origin [#"http://localhost*"])))
+	       
+	      
