@@ -1,4 +1,3 @@
-Last5 First5 Female Color5 03/05/1981  
-Last6 First6 Female Color6 04/06/1992  
-Last0 First0 Male Color0 05/07/2003  
-Lastz Firstz Male Colorz 06/08/1974  
+Prince Diana Female Blue 12/05/1941  
+Romanova Natasha Female Black 04/06/1964  
+Munroe Ororo Female Storm 05/07/1975  
