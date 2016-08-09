@@ -1,35 +1,39 @@
 # bio
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
-
-## Development Mode
+Test driving a cli + webserver in Clojure with fake people data
 
 ### Run application:
 
+To start the server-
 ```
-lein clean
-lein figwheel dev
-```
-
-Figwheel will automatically push cljs changes to the browser.
-
-Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
-
-## Production Build
-
-```
-lein clean
-lein uberjar
+lein do clean, deps, run
 ```
 
-That should compile the clojurescript code first, and then create the standalone jar.
+You can navigate then navigate to localhost:3000.
 
-When you run the jar you can set the port the ring server will use by setting the environment variable PORT.
-If it's not set, it will run on port 3000 by default.
-
-If you only want to compile the clojurescript code:
+To run the cli parser, which can take any number of optional paths-to-files-directories
+to parse-
+```
+lein run -m bio.project-reqs "./resources/sample"
 
 ```
-lein clean
-lein cljsbuild once min
+
+### Tests:
+
 ```
+lein test 
+```
+
+### Compile 
+
+```
+lein do clean, uberjar
+```
+
+After compilation, you can run the jar 
+```
+java -jar target/snapshot-number.jar
+
+```
+
+
