@@ -1,6 +1,6 @@
 (ns bio.handler-test
   (:require [clojure.test :refer :all]
-            [bio.handler :as router :refer [retrieve-records handler]]
+            [bio.handler :as router :refer [handler]]
 	    [ring.mock.request :as mock]))
 
 (deftest fn-handler-routes

@@ -7,8 +7,6 @@
             [ring.middleware.reload :refer [wrap-reload]]))
 
 
-(defn retrieve-records [arg] (repo/get-records arg))
-
 (defn respond [body]
   {:status 200 :headers {"Content-Type" "application/json"} :body body})
 
@@ -18,7 +16,7 @@
     (POST "/"  {body :body} (respond (repo/update-records (slurp body))))
     (GET "/gender" [] (respond (repo/get-records :gender)))
     (GET "/birthdate" [] (respond (repo/get-records :dob)))
-    (GET "/name" [] (respond (retrieve-records :lastname))))
+    (GET "/name" [] (respond (repo/get-records :lastname))))
   (resources "/"))
 
 (def dev-handler (-> #'routes wrap-reload wrap-json-body))
